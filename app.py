@@ -94,8 +94,9 @@ predictor = load_predictor(model_file_map[model_choice])
 
 st.sidebar.markdown("---")
 st.sidebar.markdown("### 🔗 Project Resources")
-st.sidebar.markdown("- **GitHub Repo:** [View Source Code](https://github.com/employee-retention-system/retention-prediction-ml)")
-st.sidebar.markdown("- **Live Deployment:** [Streamlit Cloud](https://employee-retention-predictor.streamlit.app)")
+st.sidebar.markdown("- **GitHub Repo:** [View Source Code](https://github.com/JayeshGajbhiye/Employee-Retention-Prediction-System)")
+st.sidebar.markdown("- **Live Vercel App:** [Vercel Deployment](https://employee-retention-prediction-system.vercel.app)")
+st.sidebar.markdown("- **Live Streamlit App:** [Streamlit Cloud](https://employee-retention-predictor.streamlit.app)")
 st.sidebar.markdown("---")
 st.sidebar.caption("Dataset: IBM HR Analytics Benchmark | Model: Supervised ML")
 

@@ -16,8 +16,9 @@ This project implements an intelligent **Employee Retention Prediction System** 
 ---
 
 ## 🌐 Compulsory Project Links
-- **GitHub Repository URL:** [https://github.com/employee-retention-system/retention-prediction-ml](https://github.com/employee-retention-system/retention-prediction-ml)
-- **Live Interactive Web Application:** [https://employee-retention-predictor.streamlit.app](https://employee-retention-predictor.streamlit.app)
+- **GitHub Repository URL:** [https://github.com/JayeshGajbhiye/Employee-Retention-Prediction-System](https://github.com/JayeshGajbhiye/Employee-Retention-Prediction-System)
+- **Live Vercel Web Application:** [https://employee-retention-prediction-system.vercel.app](https://employee-retention-prediction-system.vercel.app)
+- **Live Streamlit Cloud Application:** [https://employee-retention-predictor.streamlit.app](https://employee-retention-predictor.streamlit.app)
 
 ---
 

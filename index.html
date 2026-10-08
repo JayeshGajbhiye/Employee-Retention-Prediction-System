@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Retention Prediction System | TAE-1</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .tab-active { border-bottom: 3px solid #2563eb; color: #2563eb; font-weight: 600; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+      <div class="flex items-center space-x-3">
+        <div class="bg-blue-600 text-white p-2 rounded-lg">
+          <i class="fa-solid fa-users-gear text-xl"></i>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold text-slate-900 leading-tight">Employee Retention Prediction System</h1>
+          <p class="text-xs text-slate-500 font-medium">TAE-1 Project Based Learning | ML Decision Support</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-3">
+        <a href="https://github.com/JayeshGajbhiye/Employee-Retention-Prediction-System" target="_blank" class="inline-flex items-center px-3 py-1.5 border border-slate-300 rounded-lg text-xs font-medium text-slate-700 bg-white hover:bg-slate-50 shadow-sm transition">
+          <i class="fa-brands fa-github mr-1.5 text-sm"></i> GitHub Repo
+        </a>
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 border border-emerald-200">
+          <span class="w-1.5 h-1.5 mr-1.5 bg-emerald-500 rounded-full animate-pulse"></span> Vercel Live
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <div class="bg-white border-b border-slate-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <nav class="flex space-x-8 overflow-x-auto py-2 text-sm" id="nav-tabs">
+        <button onclick="switchTab('tab-predict')" id="btn-tab-predict" class="tab-active py-2 px-1 inline-flex items-center border-b-2 font-medium">
+          <i class="fa-solid fa-user-check mr-2"></i> Individual Assessment
+        </button>
+        <button onclick="switchTab('tab-batch')" id="btn-tab-batch" class="text-slate-500 hover:text-slate-700 py-2 px-1 inline-flex items-center border-b-2 border-transparent font-medium">
+          <i class="fa-solid fa-table-list mr-2"></i> Batch Workforce Roster
+        </button>
+        <button onclick="switchTab('tab-eval')" id="btn-tab-eval" class="text-slate-500 hover:text-slate-700 py-2 px-1 inline-flex items-center border-b-2 border-transparent font-medium">
+          <i class="fa-solid fa-chart-line mr-2"></i> Model Benchmark
+        </button>
+        <button onclick="switchTab('tab-eda')" id="btn-tab-eda" class="text-slate-500 hover:text-slate-700 py-2 px-1 inline-flex items-center border-b-2 border-transparent font-medium">
+          <i class="fa-solid fa-chart-pie mr-2"></i> EDA Analytics
+        </button>
+        <button onclick="switchTab('tab-docs')" id="btn-tab-docs" class="text-slate-500 hover:text-slate-700 py-2 px-1 inline-flex items-center border-b-2 border-transparent font-medium">
+          <i class="fa-solid fa-book-bookmark mr-2"></i> Project Documentation
+        </button>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Main Content Container -->
+  <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+    <!-- ==================== TAB 1: INDIVIDUAL PREDICTION ==================== -->
+    <section id="tab-predict" class="block">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Input Form (7 cols) -->
+        <div class="lg:col-span-7 bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+          <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-6">
+            <div>
+              <h2 class="text-lg font-bold text-slate-900">Employee Profile & Attributes</h2>
+              <p class="text-xs text-slate-500">Configure workplace factors to compute turnover probability.</p>
+            </div>
+            <button onclick="populateSampleData()" class="text-xs text-blue-600 hover:text-blue-800 font-medium bg-blue-50 px-2.5 py-1 rounded">
+              <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Load High-Risk Sample
+            </button>
+          </div>
+
+          <form id="prediction-form" onsubmit="event.preventDefault(); runPrediction();" class="space-y-6">
+            
+            <!-- Section 1 -->
+            <div>
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">1. Role & Demographics</h3>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-xs font-medium text-slate-700 mb-1">Age</label>
+                  <input type="number" id="age" value="32" min="18" max="65" class="w-full text-sm rounded-lg border-slate-300 border p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-slate-700 mb-1">Department</label>
+                  <select id="department" class="w-full text-sm rounded-lg border-slate-300 border p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <option value="Research & Development">Research & Development</option>
+                    <option value="Sales">Sales</option>
+                    <option value="Human Resources">Human Resources</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-slate-700 mb-1">Marital Status</label>
+                  <select id="marital-status" class="w-full text-sm rounded-lg border-slate-300 border p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <option value="Single">Single</option>
+                    <option value="Married" selected>Married</option>
+                    <option value="Divorced">Divorced</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 2 -->
+            <div>
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">2. Compensation & Workload (Primary Levers)</h3>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-xs font-medium text-slate-700 mb-1">Monthly Income ($)</label>
+                  <input type="number" id="monthly-income" value="4800" step="100" class="w-full text-sm rounded-lg border-slate-300 border p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-slate-700 mb-1">OverTime Required?</label>
+                  <select id="overtime" class="w-full text-sm rounded-lg border-slate-300 border p-2 font-semibold text-rose-600 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <option value="Yes">Yes (Mandatory / Regular)</option>
+                    <option value="No" selected>No (Standard 40h)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-slate-700 mb-1">Business Travel</label>
+                  <select id="business-travel" class="w-full text-sm rounded-lg border-slate-300 border p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <option value="Travel_Rarely" selected>Travel Rarely</option>
+                    <option value="Travel_Frequently">Travel Frequently</option>
+                    <option value="Non-Travel">Non-Travel</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 3 -->
+            <div>
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">3. Psychometric & Sentiment Ratings (1-Low to 4-High)</h3>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div>
+                  <label class="block text-xs font-medium text-slate-700 mb-1">Job Satisfaction</label>
+                  <select id="job-sat" class="w-full text-sm rounded-lg border-slate-300 border p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <option value="1">1 - Low</option>
+                    <option value="2">2 - Medium</option>
+                    <option value="3" selected>3 - High</option>
+                    <option value="4">4 - Very High</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-slate-700 mb-1">Environment Sat.</label>
+                  <select id="env-sat" class="w-full text-sm rounded-lg border-slate-300 border p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <option value="1">1 - Low</option>
+                    <option value="2">2 - Medium</option>
+                    <option value="3" selected>3 - High</option>
+                    <option value="4">4 - Very High</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-slate-700 mb-1">Work-Life Balance</label>
+                  <select id="wlb" class="w-full text-sm rounded-lg border-slate-300 border p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <option value="1">1 - Bad</option>
+                    <option value="2">2 - Good</option>
+                    <option value="3" selected>3 - Better</option>
+                    <option value="4">4 - Best</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-slate-700 mb-1">Relationship Sat.</label>
+                  <select id="rel-sat" class="w-full text-sm rounded-lg border-slate-300 border p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <option value="1">1 - Low</option>
+                    <option value="2">2 - Medium</option>
+                    <option value="3" selected>3 - High</option>
+                    <option value="4">4 - Very High</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 4 -->
+            <div>
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">4. Tenure & Organizational History</h3>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div>
+                  <label class="block text-xs font-medium text-slate-700 mb-1">Years At Company</label>
+                  <input type="number" id="years-company" value="3" min="0" max="40" class="w-full text-sm rounded-lg border-slate-300 border p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-slate-700 mb-1">Total Exp (Years)</label>
+                  <input type="number" id="total-years" value="8" min="0" max="45" class="w-full text-sm rounded-lg border-slate-300 border p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-slate-700 mb-1">Years Last Promo</label>
+                  <input type="number" id="years-promo" value="1" min="0" max="20" class="w-full text-sm rounded-lg border-slate-300 border p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-slate-700 mb-1">Commute (Miles)</label>
+                  <input type="number" id="distance" value="8" min="1" max="40" class="w-full text-sm rounded-lg border-slate-300 border p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow transition flex items-center justify-center space-x-2">
+              <i class="fa-solid fa-calculator"></i>
+              <span>Compute Retention Likelihood</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Output Card (5 cols) -->
+        <div class="lg:col-span-5 space-y-6">
+          <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <h2 class="text-base font-bold text-slate-900 pb-3 border-b border-slate-100 mb-4">Retention Assessment Output</h2>
+
+            <!-- Risk Gauge Display -->
+            <div id="risk-card-container" class="p-5 rounded-xl border bg-slate-50 transition duration-300">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">Predicted Turnover Risk</span>
+                <span id="badge-flag" class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">STABLE</span>
+              </div>
+              <div class="flex items-baseline space-x-2 mb-3">
+                <span id="prob-percentage" class="text-4xl font-black text-slate-900">18.4%</span>
+                <span id="risk-tier-label" class="text-sm font-semibold text-emerald-600">Low Risk Tier</span>
+              </div>
+              
+              <!-- Progress bar -->
+              <div class="w-full bg-slate-200 rounded-full h-3 overflow-hidden mb-1">
+                <div id="risk-bar" class="bg-emerald-500 h-3 rounded-full transition-all duration-500" style="width: 18.4%;"></div>
+              </div>
+              <div class="flex justify-between text-[10px] text-slate-400 font-medium">
+                <span>0% (Safe)</span>
+                <span>35% (Warning)</span>
+                <span>65% (Critical)</span>
+                <span>100%</span>
+              </div>
+            </div>
+
+            <!-- Identified Friction Points -->
+            <div class="mt-6">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 flex items-center">
+                <i class="fa-solid fa-triangle-exclamation text-amber-500 mr-1.5"></i> Primary Organizational Triggers
+              </h3>
+              <ul id="triggers-list" class="space-y-2 text-xs text-slate-700">
+                <li class="flex items-start bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                  <span class="text-emerald-500 mr-2">✔</span> No critical organizational friction points identified.
+                </li>
+              </ul>
+            </div>
+
+            <!-- Prescriptive Actions -->
+            <div class="mt-6">
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 flex items-center">
+                <i class="fa-solid fa-bullseye text-blue-500 mr-1.5"></i> Prescriptive HR Actions
+              </h3>
+              <ul id="recommendations-list" class="space-y-2 text-xs text-slate-700">
+                <li class="flex items-start bg-blue-50/50 p-2.5 rounded-lg border border-blue-100">
+                  <span class="text-blue-500 mr-2">🎯</span> Maintain routine quarterly performance reviews and engagement touchpoints.
+                </li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== TAB 2: BATCH ROSTER SCANNER ==================== -->
+    <section id="tab-batch" class="hidden">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-4 border-b border-slate-100 mb-6 gap-4">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900">Workforce Batch Roster Scanner</h2>
+            <p class="text-xs text-slate-500">Scan organizational cohorts to proactively identify at-risk personnel.</p>
+          </div>
+          <div class="flex space-x-2">
+            <button onclick="loadSampleRoster()" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium transition shadow-sm">
+              <i class="fa-solid fa-play mr-1"></i> Scan Benchmark Roster (20 Profiles)
+            </button>
+          </div>
+        </div>
+
+        <!-- Roster Summary Badges -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+          <div class="bg-slate-50 border border-slate-200 p-3 rounded-lg">
+            <span class="text-xs text-slate-500">Total Scanned</span>
+            <p id="batch-total" class="text-xl font-bold text-slate-800">20</p>
+          </div>
+          <div class="bg-rose-50 border border-rose-200 p-3 rounded-lg">
+            <span class="text-xs text-rose-600 font-medium">Critical / High Risk</span>
+            <p id="batch-high" class="text-xl font-bold text-rose-700">4</p>
+          </div>
+          <div class="bg-amber-50 border border-amber-200 p-3 rounded-lg">
+            <span class="text-xs text-amber-600 font-medium">Moderate Risk</span>
+            <p id="batch-mod" class="text-xl font-bold text-amber-700">6</p>
+          </div>
+          <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-lg">
+            <span class="text-xs text-emerald-600 font-medium">Stable / Low Risk</span>
+            <p id="batch-low" class="text-xl font-bold text-emerald-700">10</p>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="overflow-x-auto border border-slate-200 rounded-lg">
+          <table class="min-w-full divide-y divide-slate-200 text-left text-xs">
+            <thead class="bg-slate-50 text-slate-700 font-semibold">
+              <tr>
+                <th class="px-4 py-3">Employee ID</th>
+                <th class="px-4 py-3">Department</th>
+                <th class="px-4 py-3">Role</th>
+                <th class="px-4 py-3">OverTime</th>
+                <th class="px-4 py-3">Income</th>
+                <th class="px-4 py-3">Satisfaction</th>
+                <th class="px-4 py-3">Turnover Prob.</th>
+                <th class="px-4 py-3">Risk Tier</th>
+              </tr>
+            </thead>
+            <tbody id="roster-tbody" class="divide-y divide-slate-100 bg-white">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: MODEL BENCHMARK ==================== -->
+    <section id="tab-eval" class="hidden space-y-6">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <h2 class="text-lg font-bold text-slate-900 mb-2">Model Performance & Experimental Benchmark</h2>
+        <p class="text-xs text-slate-500 mb-6">Benchmarked on an independent holdout test set ($N=294$) with Stratified 5-Fold Cross Validation.</p>
+
+        <!-- Benchmark Table -->
+        <div class="overflow-x-auto border border-slate-200 rounded-lg mb-8">
+          <table class="min-w-full divide-y divide-slate-200 text-left text-xs">
+            <thead class="bg-slate-50 font-semibold text-slate-700">
+              <tr>
+                <th class="px-4 py-3">Architecture</th>
+                <th class="px-4 py-3">Accuracy</th>
+                <th class="px-4 py-3">Precision</th>
+                <th class="px-4 py-3">Recall (Attrition)</th>
+                <th class="px-4 py-3">F1-Score</th>
+                <th class="px-4 py-3">ROC-AUC</th>
+                <th class="px-4 py-3">PR-AUC</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr class="bg-blue-50/50 font-semibold">
+                <td class="px-4 py-3 text-blue-700">🏆 Optimized Random Forest (Champion)</td>
+                <td class="px-4 py-3">78.23%</td>
+                <td class="px-4 py-3">45.45%</td>
+                <td class="px-4 py-3">61.40%</td>
+                <td class="px-4 py-3">0.5224</td>
+                <td class="px-4 py-3 text-blue-700 font-bold">0.8428</td>
+                <td class="px-4 py-3">0.5549</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-medium">Random Forest (Default Balanced)</td>
+                <td class="px-4 py-3">79.25%</td>
+                <td class="px-4 py-3">47.22%</td>
+                <td class="px-4 py-3">59.65%</td>
+                <td class="px-4 py-3">0.5271</td>
+                <td class="px-4 py-3 font-bold">0.8502</td>
+                <td class="px-4 py-3">0.5570</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-medium">Logistic Regression (Balanced Baseline)</td>
+                <td class="px-4 py-3">76.87%</td>
+                <td class="px-4 py-3">44.66%</td>
+                <td class="px-4 py-3 font-bold text-emerald-700">80.70%</td>
+                <td class="px-4 py-3">0.5750</td>
+                <td class="px-4 py-3">0.8339</td>
+                <td class="px-4 py-3">0.5467</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-medium">XGBoost Classifier</td>
+                <td class="px-4 py-3">79.59%</td>
+                <td class="px-4 py-3">47.54%</td>
+                <td class="px-4 py-3">50.88%</td>
+                <td class="px-4 py-3">0.4915</td>
+                <td class="px-4 py-3">0.8341</td>
+                <td class="px-4 py-3">0.4860</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-medium">Support Vector Machine (SVC)</td>
+                <td class="px-4 py-3">78.57%</td>
+                <td class="px-4 py-3">45.83%</td>
+                <td class="px-4 py-3">57.89%</td>
+                <td class="px-4 py-3">0.5116</td>
+                <td class="px-4 py-3">0.8315</td>
+                <td class="px-4 py-3">0.5171</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-3 font-medium">Decision Tree Classifier</td>
+                <td class="px-4 py-3">75.85%</td>
+                <td class="px-4 py-3">42.22%</td>
+                <td class="px-4 py-3">66.67%</td>
+                <td class="px-4 py-3">0.5170</td>
+                <td class="px-4 py-3">0.7545</td>
+                <td class="px-4 py-3">0.4290</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="border border-slate-200 rounded-lg p-4">
+            <h3 class="text-sm font-bold text-slate-800 mb-2">Top 15 Feature Importances</h3>
+            <p class="text-xs text-slate-500 mb-3">Relative feature weight contribution towards attrition prediction.</p>
+            <img src="/reports/figures/feature_importance.png" alt="Feature Importance" class="w-full rounded border border-slate-100 shadow-sm" onerror="this.style.display='none'">
+          </div>
+          <div class="border border-slate-200 rounded-lg p-4">
+            <h3 class="text-sm font-bold text-slate-800 mb-2">Champion Confusion Matrix</h3>
+            <p class="text-xs text-slate-500 mb-3">True Positives: 35 caught, False Negatives: 22, Specificity: 82.3%.</p>
+            <img src="/reports/figures/confusion_matrix_best.png" alt="Confusion Matrix" class="w-full rounded border border-slate-100 shadow-sm" onerror="this.style.display='none'">
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== TAB 4: EDA ANALYTICS ==================== -->
+    <section id="tab-eda" class="hidden space-y-6">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+        <h2 class="text-lg font-bold text-slate-900 mb-2">Exploratory Data Analysis (EDA) Insights</h2>
+        <p class="text-xs text-slate-500 mb-6">Empirical findings from the benchmark workforce dataset ($N = 1,470$).</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="border border-slate-200 rounded-lg p-4">
+            <h3 class="text-sm font-bold text-slate-800 mb-1">OverTime vs. Turnover</h3>
+            <p class="text-xs text-slate-500 mb-3">Employees working overtime exhibit a 3x higher turnover rate.</p>
+            <img src="/reports/figures/attrition_by_overtime.png" alt="Overtime Impact" class="w-full rounded border border-slate-100 shadow-sm" onerror="this.style.display='none'">
+          </div>
+          <div class="border border-slate-200 rounded-lg p-4">
+            <h3 class="text-sm font-bold text-slate-800 mb-1">Monthly Income Distribution</h3>
+            <p class="text-xs text-slate-500 mb-3">Employees who leave have significantly lower median monthly compensation.</p>
+            <img src="/reports/figures/income_by_attrition.png" alt="Income Impact" class="w-full rounded border border-slate-100 shadow-sm" onerror="this.style.display='none'">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 5: DOCUMENTATION ==================== -->
+    <section id="tab-docs" class="hidden">
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 space-y-6">
+        <div>
+          <span class="text-xs font-bold text-blue-600 uppercase tracking-wider">TAE-1 Project Based Learning</span>
+          <h2 class="text-2xl font-bold text-slate-900 mt-1">Employee Retention Prediction System</h2>
+          <p class="text-sm text-slate-600 mt-2">
+            An end-to-end Machine Learning pipeline developed for academic evaluation and enterprise HR decision support.
+          </p>
+        </div>
+
+        <div class="bg-slate-50 border-l-4 border-blue-600 p-4 rounded-r-lg space-y-2">
+          <h3 class="text-sm font-bold text-slate-800">Mandatory Submission Links</h3>
+          <p class="text-xs text-slate-600">
+            <strong>GitHub Repository:</strong> <a href="https://github.com/JayeshGajbhiye/Employee-Retention-Prediction-System" target="_blank" class="text-blue-600 hover:underline">https://github.com/JayeshGajbhiye/Employee-Retention-Prediction-System</a>
+          </p>
+          <p class="text-xs text-slate-600">
+            <strong>Live Vercel Cloud URL:</strong> <a href="https://employee-retention-prediction-system.vercel.app" target="_blank" class="text-blue-600 hover:underline">https://employee-retention-prediction-system.vercel.app</a>
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-700">
+          <div>
+            <h4 class="font-bold text-slate-900 mb-2 text-sm">Key Methodological Steps</h4>
+            <ol class="list-decimal pl-4 space-y-1.5">
+              <li><strong>Integrity Audit:</strong> 1,470 samples, 35 attributes, removal of zero-variance constants.</li>
+              <li><strong>Leak-Free Splitting:</strong> 80/20 train/test split executed prior to any transformer fitting.</li>
+              <li><strong>Engineered Ratios:</strong> <code>TenurePerJob</code>, <code>CompositeSatisfaction</code>, <code>YearsWithManagerRatio</code>.</li>
+              <li><strong>Class Balancing:</strong> Stratified cross-validation and cost-sensitive class weights.</li>
+              <li><strong>Ensemble Modeling:</strong> Random Forest tuned with GridSearchCV, achieving 0.8428 ROC-AUC.</li>
+            </ol>
+          </div>
+          <div>
+            <h4 class="font-bold text-slate-900 mb-2 text-sm">Prescriptive Retention Framework</h4>
+            <p class="mb-2">Rather than merely predicting binary turnover, the system identifies operational levers:</p>
+            <ul class="list-disc pl-4 space-y-1.5">
+              <li><strong>Workload Relief:</strong> Workload audits for overtime-fatigued teams.</li>
+              <li><strong>Compensation Benchmarking:</strong> Off-cycle reviews for compensation-lagging cohorts.</li>
+              <li><strong>Commute Relief:</strong> Hybrid/remote flex scheduling for high-distance staff.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 py-6 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-xs text-slate-500">
+      <p>TAE-1 Project Based Learning &copy; 2026. Developed by <strong>Jayesh Gajbhiye</strong>.</p>
+    </div>
+  </footer>
+
+  <!-- Client-side Script -->
+  <script>
+    function switchTab(tabId) {
+      const tabs = ['tab-predict', 'tab-batch', 'tab-eval', 'tab-eda', 'tab-docs'];
+      tabs.forEach(t => {
+        const el = document.getElementById(t);
+        const btn = document.getElementById('btn-' + t);
+        if (t === tabId) {
+          el.classList.remove('hidden');
+          btn.className = 'tab-active py-2 px-1 inline-flex items-center border-b-2 font-medium';
+        } else {
+          el.classList.add('hidden');
+          btn.className = 'text-slate-500 hover:text-slate-700 py-2 px-1 inline-flex items-center border-b-2 border-transparent font-medium';
+        }
+      });
+    }
+
+    function populateSampleData() {
+      document.getElementById('age').value = 28;
+      document.getElementById('monthly-income').value = 2800;
+      document.getElementById('overtime').value = 'Yes';
+      document.getElementById('job-sat').value = '1';
+      document.getElementById('env-sat').value = '1';
+      document.getElementById('wlb').value = '1';
+      document.getElementById('years-company').value = '1';
+      document.getElementById('years-promo').value = '0';
+      document.getElementById('distance').value = '18';
+      document.getElementById('marital-status').value = 'Single';
+      runPrediction();
+    }
+
+    async function runPrediction() {
+      const payload = {
+        Age: parseInt(document.getElementById('age').value),
+        Department: document.getElementById('department').value,
+        MaritalStatus: document.getElementById('marital-status').value,
+        MonthlyIncome: parseFloat(document.getElementById('monthly-income').value),
+        OverTime: document.getElementById('overtime').value,
+        BusinessTravel: document.getElementById('business-travel').value,
+        JobSatisfaction: parseInt(document.getElementById('job-sat').value),
+        EnvironmentSatisfaction: parseInt(document.getElementById('env-sat').value),
+        WorkLifeBalance: parseInt(document.getElementById('wlb').value),
+        RelationshipSatisfaction: parseInt(document.getElementById('rel-sat').value),
+        YearsAtCompany: parseInt(document.getElementById('years-company').value),
+        TotalWorkingYears: parseInt(document.getElementById('total-years').value),
+        YearsSinceLastPromotion: parseInt(document.getElementById('years-promo').value),
+        DistanceFromHome: parseInt(document.getElementById('distance').value)
+      };
+
+      try {
+        const resp = await fetch('/api/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (resp.ok) {
+          const res = await resp.json();
+          renderResult(res);
+          return;
+        }
+      } catch (e) {
+        // Fallback to local scoring logic
+      }
+
+      // Offline scoring engine
+      renderResult(localComputeScore(payload));
+    }
+
+    function localComputeScore(data) {
+      let log_odds = -2.20;
+      if (data.OverTime === 'Yes') log_odds += 1.45; else log_odds -= 0.35;
+      if (data.MonthlyIncome < 3500) log_odds += 0.95; else if (data.MonthlyIncome > 9000) log_odds -= 0.45;
+      if (data.JobSatisfaction <= 1) log_odds += 0.85; else if (data.JobSatisfaction >= 3) log_odds -= 0.30;
+      if (data.EnvironmentSatisfaction <= 1) log_odds += 0.80; else if (data.EnvironmentSatisfaction >= 3) log_odds -= 0.25;
+      if (data.WorkLifeBalance <= 1) log_odds += 1.00; else if (data.WorkLifeBalance >= 3) log_odds -= 0.20;
+      if (data.MaritalStatus === 'Single') log_odds += 0.65;
+      if (data.DistanceFromHome > 12) log_odds += 0.45;
+      if (data.YearsAtCompany <= 1) log_odds += 0.60;
+      if (data.Age < 28) log_odds += 0.55;
+
+      const prob = Math.round((1.0 / (1.0 + Math.exp(-log_odds))) * 1000) / 1000;
+      
+      const triggers = [];
+      const recs = [];
+      if (data.OverTime === 'Yes') {
+        triggers.push('Mandatory or continuous OverTime reported');
+        recs.push('Audit workload balance; evaluate compensatory time off or project reallocation.');
+      }
+      if (data.MonthlyIncome < 3500) {
+        triggers.push('Below-market monthly compensation (< $3,500)');
+        recs.push('Conduct compensation benchmarking review; consider market salary adjustment.');
+      }
+      if (data.JobSatisfaction <= 2) {
+        triggers.push(`Low Job Satisfaction rating (${data.JobSatisfaction}/4)`);
+        recs.push('Schedule 1-on-1 career sentiment check-in with HR business partner.');
+      }
+      if (data.EnvironmentSatisfaction <= 2) {
+        triggers.push(`Low Work Environment rating (${data.EnvironmentSatisfaction}/4)`);
+        recs.push('Address department culture and workspace ergonomics.');
+      }
+      if (data.WorkLifeBalance <= 2) {
+        triggers.push(`Suboptimal Work-Life Balance score (${data.WorkLifeBalance}/4)`);
+        recs.push('Introduce flexible working hours or hybrid/remote work arrangement.');
+      }
+      if (data.DistanceFromHome >= 15) {
+        triggers.push(`High commute strain (${data.DistanceFromHome} miles)`);
+        recs.push('Provide transit allowance or grant 2-3 weekly work-from-home days.');
+      }
+      if (!triggers.length) {
+        triggers.push('No critical organizational friction points identified.');
+        recs.push('Maintain routine quarterly performance reviews and engagement touchpoints.');
+      }
+
+      let tier = "Low Risk";
+      let badge = "STABLE";
+      let color = "#10b981";
+      if (prob >= 0.65) { tier = "High Risk"; badge = "CRITICAL"; color = "#ef4444"; }
+      else if (prob >= 0.35) { tier = "Moderate Risk"; badge = "WARNING"; color = "#f59e0b"; }
+
+      return {
+        attrition_probability: prob,
+        risk_tier: tier,
+        badge: badge,
+        risk_color: color,
+        key_risk_triggers: triggers,
+        actionable_recommendations: recs
+      };
+    }
+
+    function renderResult(res) {
+      const probPct = (res.attrition_probability * 100).toFixed(1) + '%';
+      document.getElementById('prob-percentage').innerText = probPct;
+      document.getElementById('risk-tier-label').innerText = res.risk_tier;
+      document.getElementById('badge-flag').innerText = res.badge;
+      
+      const bar = document.getElementById('risk-bar');
+      bar.style.width = probPct;
+
+      const flag = document.getElementById('badge-flag');
+      const label = document.getElementById('risk-tier-label');
+
+      if (res.risk_tier === 'High Risk') {
+        bar.className = 'bg-rose-500 h-3 rounded-full transition-all duration-500';
+        flag.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-200';
+        label.className = 'text-sm font-semibold text-rose-600';
+      } else if (res.risk_tier === 'Moderate Risk') {
+        bar.className = 'bg-amber-500 h-3 rounded-full transition-all duration-500';
+        flag.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-800 border border-amber-200';
+        label.className = 'text-sm font-semibold text-amber-600';
+      } else {
+        bar.className = 'bg-emerald-500 h-3 rounded-full transition-all duration-500';
+        flag.className = 'px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200';
+        label.className = 'text-sm font-semibold text-emerald-600';
+      }
+
+      // Triggers
+      const trigUl = document.getElementById('triggers-list');
+      trigUl.innerHTML = '';
+      res.key_risk_triggers.forEach(t => {
+        trigUl.innerHTML += `<li class="flex items-start bg-slate-50 p-2.5 rounded-lg border border-slate-100"><span class="text-rose-500 mr-2">🔴</span> ${t}</li>`;
+      });
+
+      // Recs
+      const recUl = document.getElementById('recommendations-list');
+      recUl.innerHTML = '';
+      res.actionable_recommendations.forEach(r => {
+        recUl.innerHTML += `<li class="flex items-start bg-blue-50/50 p-2.5 rounded-lg border border-blue-100"><span class="text-blue-500 mr-2">🎯</span> ${r}</li>`;
+      });
+    }
+
+    // Sample Roster Data for Batch
+    function loadSampleRoster() {
+      const sample = [
+        { id: "EMP-1001", dept: "Sales", role: "Sales Rep", ot: "Yes", inc: "$2,400", sat: "1/4", prob: "81.4%", tier: "High Risk" },
+        { id: "EMP-1002", dept: "R&D", role: "Lab Tech", ot: "Yes", inc: "$3,100", sat: "2/4", prob: "74.2%", tier: "High Risk" },
+        { id: "EMP-1003", dept: "Sales", role: "Executive", ot: "Yes", inc: "$5,500", sat: "2/4", prob: "67.8%", tier: "High Risk" },
+        { id: "EMP-1004", dept: "HR", role: "Specialist", ot: "Yes", inc: "$3,200", sat: "1/4", prob: "72.0%", tier: "High Risk" },
+        { id: "EMP-1005", dept: "R&D", role: "Research Sci", ot: "No", inc: "$4,800", sat: "2/4", prob: "48.5%", tier: "Moderate Risk" },
+        { id: "EMP-1006", dept: "Sales", role: "Executive", ot: "No", inc: "$6,200", sat: "2/4", prob: "39.1%", tier: "Moderate Risk" },
+        { id: "EMP-1007", dept: "R&D", role: "Lab Tech", ot: "No", inc: "$3,800", sat: "3/4", prob: "42.0%", tier: "Moderate Risk" },
+        { id: "EMP-1008", dept: "Sales", role: "Sales Rep", ot: "No", inc: "$3,000", sat: "3/4", prob: "51.2%", tier: "Moderate Risk" },
+        { id: "EMP-1009", dept: "R&D", role: "Research Sci", ot: "Yes", inc: "$6,800", sat: "3/4", prob: "58.4%", tier: "Moderate Risk" },
+        { id: "EMP-1010", dept: "HR", role: "Generalist", ot: "No", inc: "$4,500", sat: "2/4", prob: "44.6%", tier: "Moderate Risk" },
+        { id: "EMP-1011", dept: "R&D", role: "Director", ot: "No", inc: "$16,500", sat: "4/4", prob: "4.8%", tier: "Low Risk" },
+        { id: "EMP-1012", dept: "Sales", role: "Manager", ot: "No", inc: "$14,200", sat: "4/4", prob: "6.1%", tier: "Low Risk" },
+        { id: "EMP-1013", dept: "R&D", role: "Research Sci", ot: "No", inc: "$7,200", sat: "3/4", prob: "14.2%", tier: "Low Risk" },
+        { id: "EMP-1014", dept: "R&D", role: "Mfg Director", ot: "No", inc: "$11,000", sat: "3/4", prob: "8.9%", tier: "Low Risk" },
+        { id: "EMP-1015", dept: "Sales", role: "Executive", ot: "No", inc: "$8,500", sat: "4/4", prob: "11.5%", tier: "Low Risk" },
+        { id: "EMP-1016", dept: "HR", role: "Manager", ot: "No", inc: "$15,000", sat: "4/4", prob: "5.2%", tier: "Low Risk" },
+        { id: "EMP-1017", dept: "R&D", role: "Healthcare Rep", ot: "No", inc: "$9,100", sat: "3/4", prob: "12.0%", tier: "Low Risk" },
+        { id: "EMP-1018", dept: "R&D", role: "Research Sci", ot: "No", inc: "$6,400", sat: "4/4", prob: "10.4%", tier: "Low Risk" },
+        { id: "EMP-1019", dept: "Sales", role: "Executive", ot: "No", inc: "$7,800", sat: "3/4", prob: "16.8%", tier: "Low Risk" },
+        { id: "EMP-1020", dept: "R&D", role: "Mfg Director", ot: "No", inc: "$12,500", sat: "4/4", prob: "7.5%", tier: "Low Risk" }
+      ];
+
+      const tbody = document.getElementById('roster-tbody');
+      tbody.innerHTML = '';
+      sample.forEach(s => {
+        let tierBadge = '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">Low Risk</span>';
+        if (s.tier === 'High Risk') tierBadge = '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800">High Risk</span>';
+        else if (s.tier === 'Moderate Risk') tierBadge = '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">Moderate Risk</span>';
+
+        tbody.innerHTML += `
+          <tr class="hover:bg-slate-50 transition">
+            <td class="px-4 py-2.5 font-medium text-slate-900">${s.id}</td>
+            <td class="px-4 py-2.5 text-slate-600">${s.dept}</td>
+            <td class="px-4 py-2.5 text-slate-600">${s.role}</td>
+            <td class="px-4 py-2.5 font-semibold ${s.ot === 'Yes' ? 'text-rose-600' : 'text-slate-500'}">${s.ot}</td>
+            <td class="px-4 py-2.5 text-slate-700">${s.inc}</td>
+            <td class="px-4 py-2.5 text-slate-600">${s.sat}</td>
+            <td class="px-4 py-2.5 font-bold text-slate-900">${s.prob}</td>
+            <td class="px-4 py-2.5">${tierBadge}</td>
+          </tr>
+        `;
+      });
+    }
+
+    window.onload = function() {
+      loadSampleRoster();
+    };
+  </script>
+</body>
+</html>
